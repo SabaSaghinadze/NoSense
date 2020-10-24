@@ -4,21 +4,18 @@ using System.Collections.Generic;
 namespace NoSenseTask
 {
     using CustomExtensions;
+    using System.Linq;
 
     public static class Program
     {
-        public delegate T CustomDelegate<T>(T item);
         static void Main(string[] args)
         {
-            var rightPredicate = 23;
-            var wrongPredicate = 90;
-            CustomDelegate<int> del = NewItem;
-
             Console.WriteLine("Enter numbers: ");
             var str = Console.ReadLine();
             var parts = str.Split(", ");
 
             List<int> numbers = new List<int>();
+
             foreach (var part in parts)
             {
                 try
@@ -33,47 +30,28 @@ namespace NoSenseTask
 
             int[] noNumbers = null;
 
-            var first = numbers.ThisDoesNotMakeAnySense(number => number == rightPredicate, del);
-            Console.WriteLine($"First: \n \t Collection: [{str}] \n \t Predicate: {rightPredicate} \n \t Result: {first}");
+            var originalList = numbers.ToList();
+            numbers.Sort();
 
-            var second = numbers.ThisDoesNotMakeAnySense(number => number == wrongPredicate, del);
-            Console.WriteLine($"Second: \n \t Collection: [{str}] \n \t Predicate: {wrongPredicate} \n \t Result: {second}");
+            var first = numbers.ThisDoesNotMakeAnySense(number => number == originalList[0], NewItem<int>);
+            Console.WriteLine($"First: \n \t Collection: [{str}] \n \t Predicate: {originalList[0]} \n \t Result: {first}");
+
+            var second = numbers.ThisDoesNotMakeAnySense(number => number == (originalList[0]-1), NewItem<int>);
+            numbers.Sort();
+            Console.WriteLine($"Second: \n \t Collection: [{str}] \n \t Predicate: {(numbers[0] - 1)} \n \t Result: {second}");
 
             // This line below will throw an exception
-            // var third = noNumbers.ThisDoesNotMakeAnySense(number => number == rightPredicate, del);
-
-            
-            CustomDelegate<string> delegateForString = NewItem;
-            List<string> names = new List<string>()
-            {
-                "Xareba", "Gogia"
-            };
-
-            var fourth = names.ThisDoesNotMakeAnySense(name => name == "Mushni Zarandia", delegateForString);
-            Console.WriteLine($"Fourth: \n \t Collection: [{string.Join(", ", names)}] \n \t Predicate: MushniZarandia \n \t Result: {fourth}");
+            // var third = noNumbers.ThisDoesNotMakeAnySense(number => number == 3, NewItem<int>);
         }
 
-        public static T NewItem<T>(T item)
+        public static T NewItem<T>()
         {
-            dynamic result = default;
-
-            switch (typeof(T).Name)
+            if(typeof(T).Name == nameof(Int32))
             {
-                case nameof(Int32):
-                    result = new Random().Next();
-                    break;
-                case nameof(Double):
-                    result = new Random().NextDouble();
-                    break;
-                case nameof(Boolean):
-                    result = true;
-                    break;
-                case nameof(String):
-                    result = "Eg sxva filmia";
-                    break;
+                return (T)Convert.ChangeType(new Random().Next(), typeof(T));
             }
 
-            return (T)Convert.ChangeType(result, typeof(T));
+            return default;
         }
     }
 }

@@ -5,26 +5,22 @@ namespace CustomExtensions
 {
     public static class NoSense
     {
-        public static T ThisDoesNotMakeAnySense<T>(this IEnumerable<T> en, Predicate<T> pred, Delegate del)
+        public static T ThisDoesNotMakeAnySense<T>(this IEnumerable<T> en, Predicate<T> pred, Func<T> del)
         {
             if (en == null || pred == null || del == null)
             {
                 throw new ArgumentNullException();
             }
 
-            bool isInCollection = false;
-
             foreach (var item in en)
             {
-                isInCollection = pred.Invoke(item);
-
-                if (isInCollection)
+                if (pred(item))
                 {
-                    break;
+                    return default;
                 }
             }
 
-            return isInCollection ? default : (T)del.DynamicInvoke(default(T));
+            return del();
         }
     }
 }
