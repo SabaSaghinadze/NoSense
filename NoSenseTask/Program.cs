@@ -30,15 +30,14 @@ namespace NoSenseTask
 
             int[] noNumbers = null;
 
-            var originalList = numbers.ToList();
-            numbers.Sort();
+            var sorted = numbers.ToList();
+            sorted.Sort();
 
-            var first = numbers.ThisDoesNotMakeAnySense(number => number == originalList[0], NewItem<int>);
-            Console.WriteLine($"First: \n \t Collection: [{str}] \n \t Predicate: {originalList[0]} \n \t Result: {first}");
+            var first = numbers.ThisDoesNotMakeAnySense(number => number == numbers[0], NewItem<int>);
+            Console.WriteLine($"First: \n \t Collection: [{str}] \n \t Predicate: {numbers[0]} \n \t Result: {first}");
 
-            var second = numbers.ThisDoesNotMakeAnySense(number => number == (originalList[0]-1), NewItem<int>);
-            numbers.Sort();
-            Console.WriteLine($"Second: \n \t Collection: [{str}] \n \t Predicate: {(numbers[0] - 1)} \n \t Result: {second}");
+            var second = numbers.ThisDoesNotMakeAnySense(number => number == (sorted[0]-1), NewItem<int>);
+            Console.WriteLine($"Second: \n \t Collection: [{str}] \n \t Predicate: {(sorted[0]-1)} \n \t Result: {second}");
 
             // This line below will throw an exception
             // var third = noNumbers.ThisDoesNotMakeAnySense(number => number == 3, NewItem<int>);
